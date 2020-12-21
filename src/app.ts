@@ -10,7 +10,7 @@ import { UserRouter } from './routes/user.router';
 
 const app = express.default();
 const routers: Array<RouterConfig> = [];
-const port = 3000;
+const port = process.env.URL_PORT_API;
 
 // app.use(passport.initialize());
 // app.use(session());

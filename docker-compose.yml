@@ -1,0 +1,25 @@
+version: '3'
+services: 
+  db:
+    image: mongo
+    container_name: db
+    ports: 
+      - "27017:27017"
+    restart: always
+  api:
+    image: api_auth
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api_auth
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - URL_MONGO=mongodb://db:27017/test
+      - URL_PORT_API=3001
+      - FACEBOOK_APP_ID='150670660180166'
+      - FACEBOOK_APP_SECRET='ae1f223e9478da1dd1cfa186509c1a52'
+      - FACEBOOK_URL_CALLBACK='http://localhost:'$URL_PORT_API'/facebook/callback'
+    depends_on: 
+      - db
