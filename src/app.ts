@@ -20,7 +20,7 @@ app.use(session({
     secret: '123',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge:  10000 } // 1min
+    cookie: { maxAge: 60000 } // 1min
 }))
 
 

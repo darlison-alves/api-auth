@@ -8,7 +8,7 @@ export class FacebookStrategy extends Strategy {
         {
             clientID: process.env.FACEBOOK_APP_ID || "",
             clientSecret: process.env.FACEBOOK_APP_SECRET || "",
-            callbackURL: "http://localhost:3000/facebook/callback",
+            callbackURL: process.env.FACEBOOK_URL_CALLBACK || "",
             profileFields:["email", "name"],
             display: "touch",
             enableProof: true
@@ -20,20 +20,26 @@ export class FacebookStrategy extends Strategy {
 
     async logIn(accessToken: string, refreshToken: string, profile: Profile, done: Function ) {
         const { last_name,  first_name, id } = profile._json;
-
+        let isNew = false;
         let user = await UserModel.findOne({ provider_id: id });
-        if(!user)
+        if(!user) {
+            isNew = true;
             user = new UserModel( {
-                 name: `${first_name} ${last_name}`,
-                 username: profile.username || profile.id,
-                 provider: profile.provider,
-                 provider_id: profile.id
-                } );
-
-        if(!user.isNew)
+                name: `${first_name} ${last_name}`,
+                username: profile.username || profile.id,
+                provider: profile.provider,
+                provider_id: profile.id
+               } );
+        }
+            
+        if(isNew) {
+            console.log("novo")
             await user.save();
-        else
-            await user.update();
+        }
+        else {
+            console.log("update")
+            await user.replaceOne(user.toObject());
+        }
 
         const { password, ..._user } = user.toObject();
 

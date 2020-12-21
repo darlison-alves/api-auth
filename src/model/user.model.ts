@@ -21,11 +21,11 @@ const userSchema = new Schema<User>({
     name:       { type: Schema.Types.String },
     username:   { type: Schema.Types.String, unique: true },
     provider:   { type: Schema.Types.String , default: 'local'},
-    password:   { type: Schema.Types.String }
+    password:   { type: Schema.Types.String },
+    provider_id: { type: Schema.Types.String }
 }, {
     timestamps: true
 });
-
 
 userSchema.methods.encryptPassword = async function() {
     if(this.password) {
