@@ -7,6 +7,7 @@ import { RouterConfig } from './routes/router.config';
 import { AuthRouter } from './routes/auth.router';
 import { ErrorRouter } from './routes/error.router';
 import { UserRouter } from './routes/user.router';
+import { UserModel } from './model/user.model';
 
 const app = express.default();
 const routers: Array<RouterConfig> = [];
@@ -37,6 +38,13 @@ app.listen(port, async () => {
             useUnifiedTopology: true,
             useNewUrlParser: true
         });
+
+        let user = await UserModel.findOne({ username: 'maria' });
+        if(!user)  {
+            user = new UserModel({ username: 'maria', password: 'maria123', name: 'Maria 123' });
+            user.encryptPassword();
+            await user.save();
+        }
 
         process.on('SIGINT', async () => {            
             await disconnect();

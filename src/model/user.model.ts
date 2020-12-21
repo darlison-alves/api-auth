@@ -32,18 +32,12 @@ userSchema.methods.encryptPassword = async function() {
         const salt = await genSaltSync(10);
         const passwordHash = await hashSync(this.password, salt);
         this.password = passwordHash;
-        console.log("passwordHash", passwordHash);
-        console.log("passwordHash", this.password);
-        console.log("this.", this);
-
     }
     return;
 }
 
 userSchema.methods.comparePassword = async function (password: string): Promise<boolean> {
     try {
-        console.log("passwordHash", this.password);
-        console.log("passwordHash 0", password);
         return await compareSync(password, this.password);        
     } catch (error) {
         throw error;

@@ -13,6 +13,7 @@ export class UserRouter extends RouterConfig {
     }
 
     configureRouters(): Application {
+
         this.app.route('/users/:id').get(AuthenticatedMiddleware,(req, res) => this.controller.getById(req, res));
         this.app.route('/facebook/callback').get(passport.authenticate("facebook"), (req, res) => {
             const user: any = req.user;
@@ -20,4 +21,6 @@ export class UserRouter extends RouterConfig {
         });
         return this.app;
     }
+
+    
 }
