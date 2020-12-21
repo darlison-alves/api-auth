@@ -1,23 +1,36 @@
 import * as passport from 'passport';
 import { Strategy } from 'passport-local';
 import { BaseError } from '../errorCustom/base.error';
-import { UserRepository } from '../services/user.service';
+import { UserModel } from '../model/user.model';
 
 export class LocalStrategy extends Strategy {
-    private userRepository: UserRepository;
     constructor() {
         super((sername: string, password: string, done: Function) => this.logIn(sername, password, done));
-        this.userRepository = new UserRepository();
     }
 
-    async logIn(username: string, password: string, done: Function) {
-        const user = await this.userRepository.findOne(username);
-        console.info('user', user);
+    async logIn(username: string, password_current: string, done: Function) {
+        try {
+            const user = await UserModel.findOne({ username });
 
-        if(user.password == password) 
-            return done(null, { id: 1, name: "Darlinson", itens:[] });
+            console.log("usermo", user);
 
-        return done(new BaseError("senha invalida", 403), false);
+            if(!user) 
+                throw new BaseError('Usuário ou senha inválido', 403);
+
+            // await usermo.encryptPassword();
+            const isPasswordValid = await user.comparePassword(password_current);
+
+            console.log("result", isPasswordValid);
+
+            if(!isPasswordValid) 
+                return done(new BaseError('Usuário ou senha inválido', 403), false);
+
+            const { password ,...result } = user.toObject();
+            done(null, result);
+            
+        } catch (error) {
+            done(error, false);
+        }
     }
 }
 
