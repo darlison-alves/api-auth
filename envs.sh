@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export NODE_ENV=development
 echo 'SET URL_MONGO'
 export URL_MONGO='mongodb+srv://users:nH}DaipF0Cgw1SB)v@cluster0.7ok9z.mongodb.net/service-users?retryWrites=true&w=majority'
 
